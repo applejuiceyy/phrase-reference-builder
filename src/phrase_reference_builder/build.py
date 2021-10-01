@@ -144,7 +144,7 @@ class PhraseBuilder:
             if not isinstance(building_list[-1], str):
                 raise RuntimeError(f"Bad Resolve: {type(building_list[-1])}")
 
-        return " ".join([ret[-1] for ret in context.building])
+        return "".join([ret[-1] for ret in context.building])
 
 
 class BuildingContext(BaseModel):

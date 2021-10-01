@@ -147,43 +147,6 @@ class PronounRepository:
             if morpheme in pronoun.to_tuple():
                 return pronoun
 
-    async def figure_pronoun_from_string(self, name: str, pronoun_str: str):
-        if "/" in pronoun_str:
-            chunks = [chunk.lower() for chunk in pronoun_str]
-
-            if len(chunks) == 5:
-                return Pronoun.from_tuple(*chunks,
-                                          pronoun_type=PronounType.NEO_PRONOUN, person_class=3,
-                                          collective=False)
-
-            elif len(chunks) == 3:
-                return Pronoun.from_tuple(chunks[0], chunks[0], chunks[1], chunks[1], chunks[2],
-                                          pronoun_type=PronounType.NEO_PRONOUN, person_class=3,
-                                          collective=False)
-
-            elif len(chunks) == 2:
-                if chunks[1].endswith("self"):
-                    # probably a name of some sort
-                    return Pronoun.pronounless(chunks[0])
-
-                elif chunks[0] == chunks[1] and chunks[0] in UNICODE_EMOJI_ENGLISH:
-                    # probably an emoji pronoun
-                    pronoun = Pronoun.pronounless(chunks[0])
-                    pronoun.pronoun_type = PronounType.EMOJI_PRONOUN
-                    return pronoun
-
-            # all conventional ways of getting this pronoun have failed
-            # go the hard way
-
-            for chunk in chunks:
-                pronoun = await self.find_pronoun(chunk)
-
-                if pronoun is not None:
-                    return pronoun
-
-        elif pronoun_str in ("nameself", "pronounless"):
-            return Pronoun.pronounless(name)
-
 
 PronounRepository.default = PronounRepository.find_main_pronoun("they", collective=False)
 PronounRepository.collective = PronounRepository.find_main_pronoun("they", collective=True)
